@@ -177,8 +177,6 @@ footer{background:rgba(0,0,0,.5);backdrop-filter:blur(20px);padding:28px 16px 16
 <p id="savedMsg" style="color:#4caf50;margin-top:8px;display:none">✅ Saved!</p>
 </div>
 </main>
-
-<!-- PAGE 1 - SAME -->
 <div class="overlayPage" id="page1">
 <div class="pageBox">
 <div class="detail-topbar"><div style="display:flex;gap:10px;align-items:center"><button onclick="closeFlow()" class="btn-small" style="padding:8px 12px">← Back</button><b id="p1Title" style="font-size:16px">Game</b></div><span style="font-size:20px">🛒</span></div>
@@ -195,8 +193,6 @@ footer{background:rgba(0,0,0,.5);backdrop-filter:blur(20px);padding:28px 16px 16
 <div style="padding:0 16px"><p style="color:#aaa;font-size:12px;margin-top:10px;text-align:center">First verify UID, then tap Buy Now on pack</p></div>
 </div>
 </div>
-
-<!-- PAGE 2 - FIXED - SCREENSHOT JESA -->
 <div class="overlayPage" id="page2">
 <div class="pageBox" style="padding:16px">
 <div class="steps" style="margin:0 0 14px;padding:0"><div class="on"></div><div class="on"></div><div></div><div></div></div>
@@ -215,8 +211,6 @@ footer{background:rgba(0,0,0,.5);backdrop-filter:blur(20px);padding:28px 16px 16
 </div>
 </div>
 </div>
-
-<!-- PAGE 3 - FIXED - 0-100 PROFESSIONAL LOADING -->
 <div class="overlayPage" id="page3">
 <div class="pageBox" style="padding:22px;text-align:center">
 <div class="steps" style="margin:0 0 14px;padding:0"><div class="on"></div><div class="on"></div><div class="on"></div><div></div></div>
@@ -230,20 +224,13 @@ footer{background:rgba(0,0,0,.5);backdrop-filter:blur(20px);padding:28px 16px 16
 <p style="color:#aaa;margin-top:30px;font-size:13px">Please wait, do not close.</p>
 </div>
 </div>
-
-<!-- PAGE 4 - FIXED - PROFESSIONAL RESULT -->
 <div class="overlayPage" id="page4">
-<div class="pageBox" style="text-align:center;padding:30px 16px">
+<div class="pageBox" style="text-align:center;padding:30px 16px;background:#000">
 <div class="steps" style="margin:0 0 14px;padding:0"><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div></div>
 <div id="resultBox"></div>
-<button onclick="closeFlow()" style="width:100%;margin-top:14px;padding:15px">🏠 Back To Home</button>
-<button onclick="contactAdmin()" class="btn-ghost" style="width:100%;margin-top:8px">💬 Customer Service</button>
 </div>
 </div>
-
-<!-- PROCESSING POPUP - Payment Has been Processing -->
 <div id="f1" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center"><div style="background:#fff;color:#111;padding:28px 20px;border-radius:18px;text-align:center;width:88%;max-width:340px"><div style="width:48px;height:48px;border:4px solid #dbeafe;border-top:4px solid #2563eb;border-radius:50%;margin:0 auto;animation:spin 0.8s linear infinite"></div><h3 style="color:#1e3a8a;margin-top:12px">Payment Has been Processing.</h3><p style="color:#64748b;font-size:13px">Please do not close or refresh this page...</p><div style="font-size:20px;letter-spacing:6px;color:#2563eb">● ● ●</div></div></div>
-
 <div id="pinOverlay"><div id="pinBox"><h3>🔒 Admin PIN</h3><p>Enter PIN to open settings</p><input type="password" id="pinInput" placeholder="••••" maxlength="4" inputmode="numeric"><p id="pinError" style="color:#ff1744;display:none">❌ Wrong PIN!</p><div style="display:flex;gap:8px"><button onclick="checkPin()" style="flex:1">UNLOCK</button><button onclick="closePin()" style="flex:1;background:#333;color:#fff;box-shadow:none">Cancel</button></div></div></div>
 <footer>
 <div class="foot-top"><div class="foot-left"><h2 id="storeNameFoot">LADLA GAME STORE</h2><p><span id="storeDescFoot">LADLA GAME STORE</span> is your recharge store. Pay Safe, fast and fun at <span id="storeDescFoot2">LADLA GAME STORE</span>.</p><p style="color:#fff;font-weight:bold;margin-top:14px">LADLA GAME STORE Supports Payment Channels</p><div class="pay"><span id="payCardShow">VISA</span><span id="payCardShow2">Mastercard</span><span id="payAppleShow">Apple Pay</span><span id="payUsdtShow">USDT</span><span id="payBtcShow">Bitcoin</span></div></div><div class="foot-right"><h4>Contact us</h4><p>If you need any help, please click on "Customer Service" to contact us</p><button class="cs-btn">✉️ Customer Service</button></div></div>
@@ -309,6 +296,8 @@ function saveLogo(){const inp=document.getElementById('logoInput');if(!inp.files
 function saveContact(){localStorage.setItem('deal_contact',document.getElementById('contactInput').value);localStorage.setItem('deal_address',document.getElementById('addressInput').value);loadAll();alert('✅ Contact & Address Saved!');}
 function saveGame(i){collectGames();localStorage.setItem('deal_games',JSON.stringify(games));renderAll();alert('✅ Game '+(i+1)+' Saved!');}
 let curGame=null,curPack=null,curPay="Card",verifiedUid=false,verifiedUser="";
+let curOrderId="";
+let _curCard="********5869";
 function renderFilters(){const bar=document.getElementById('filterBar');bar.innerHTML='';filters.forEach(f=>{const b=document.createElement('button');b.textContent=f;if(f===activeFilter)b.classList.add('active');b.onclick=()=>{activeFilter=f;renderAll();};bar.appendChild(b);});document.getElementById('filterInput').value=filters.join(', ');}
 function gameCard(g,idx){let topInner=g.photo?`<img src="${g.photo}"><div class="overlay"></div><span class="emoji" style="font-size:12px;background:rgba(0,0,0,.5);padding:3px 8px;border-radius:10px">${g.cat}</span>`:`<span class="emoji">${g.icon}</span><small style="font-size:10px;background:rgba(0,0,0,.35);padding:2px 6px;border-radius:10px">${g.cat}</small>`;let bg=g.photo?`background:#000`:`background:linear-gradient(135deg,${g.color},#00000066)`;return `<div class="card-game" onclick="openGame(${idx})"><div class="top" style="${bg}">${topInner}</div><div class="inner">${g.badge?`<span class="badge">${g.badge}</span>`:''}<b>${g.name}</b><small>${g.cat} • sold</small><div style="font-size:12px;margin-top:4px">${g.price} • Tap to Buy →</div></div></div>`;}
 function renderAll(){renderFilters();let list=games;if(activeFilter!=="All"&&activeFilter!=="Trending")list=games.filter(g=>g.cat===activeFilter);if(activeFilter==="Trending")list=games.filter(g=>g.badge==="HOT"||g.badge==="TRENDING");document.getElementById('trendingGrid').innerHTML=games.slice(0,8).map((g,i)=>gameCard(g,games.indexOf(g))).join('');document.getElementById('allGrid').innerHTML=list.map(g=>gameCard(g,games.indexOf(g))).join('');renderOrders();renderThemeGrid();updateDefaultUI();renderBannerPhotosList();document.getElementById('gamesEditor').innerHTML=games.map((g,i)=>`<div class="game-edit"><div style="display:flex;justify-content:space-between;align-items:center"><b>Box ${i+1} - ${g.name}</b><button class="btn-red" onclick="deleteGame(${i})">🗑️ Delete</button></div><div style="background:#ffcc00;color:#000;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;margin:8px 0">🖼️ 1️⃣ TOP BANNER FOR THIS GAME - Set Here - This Will Show On Top Of Game Page - No Timer</div><div class="preview">${g.photo?`<img src="${g.photo}">`:`<span style="font-size:12px;color:#fff;text-align:center;padding:10px">⚠️ No Banner Yet<br>Set Banner From Below<br>Then Open Game - Only This Banner Will Show</span>`}</div><input type="file" accept="image/*" onchange="uploadGamePhoto(event,${i})">${g.photo?`<button class="btn-small" onclick="removeGamePhoto(${i})">❌ Remove Banner</button>`:''}<p style="color:#aaa;font-size:11px">Tip: Write everything inside banner photo itself - Like INSTANT DELIVERY / SECURE in LADLA GAME STORE photo. Site will not write anything on top.</p><input type="text" value="${g.name}" data-name="${i}" placeholder="Game Name"><div class="row2"><input type="text" value="${g.cat}" data-cat="${i}" placeholder="Category"><input type="text" value="${g.price}" data-price="${i}" placeholder="Price - From $300"></div><div class="row2"><input type="text" value="${g.badge}" data-badge="${i}" placeholder="Badge"><input type="text" value="${g.icon}" data-icon="${i}" placeholder="Emoji"></div><div style="background:#00ff88;color:#000;padding:8px;border-radius:8px;font-size:12px;font-weight:bold;margin:8px 0">2️⃣ FIXED USERNAME + UID - SET HERE</div><input type="text" value="${g.userLabel}" data-userlabel="${i}" placeholder="Example: PUBG ID"><div class="row2"><input type="text" value="${g.fixedUser}" data-fixeduser="${i}" placeholder="Fixed Username"><input type="text" value="${g.fixedUid}" data-fixeduid="${i}" placeholder="Fixed UID"></div><div style="background:#A855F7;color:#fff;padding:8px;border-radius:8px;font-size:12px;font-weight:bold;margin:8px 0">3️⃣ PACKS - 8 Packs - 25K To 200K</div>${g.packs.map((p,pi)=>`<div class="pack-edit"><b style="font-size:13px;color:#fff">📦 Pack ${pi+1} - ${p.name} - ${p.price}</b><div class="p-thumb">${p.photo?`<img src="${p.photo}">`:`<span style="font-size:12px;color:#fff;text-align:center;padding:10px">⚠️ No Photo For ${p.name}<br>Set From Below</span>`}</div><label style="font-size:12px;color:#FFC9A3">📸 Change Photo For ${p.name} - Will Show In Fixed Size</label><input type="file" accept="image/*" onchange="uploadPackPhoto(event,${i},${pi})"><div class="row2"><input type="text" value="${p.name}" data-packname="${i}-${pi}" placeholder="Pack Name"><input type="text" value="${p.price}" data-packprice="${i}-${pi}" placeholder="Price In $"></div><button class="btn-small" onclick="deletePack(${i},${pi})" style="background:#ff1744;width:100%;padding:10px">🗑️ Delete Pack - ${p.name}</button></div>`).join('')}<button onclick="addPack(${i})" class="btn-small" style="width:100%;background:#A855F7;padding:11px">➕ Add New Pack</button><button onclick="saveGame(${i})" class="btn-save" style="background:#00ff88;color:#000">✅ SAVE THIS GAME - Box ${i+1}</button></div>`).join('');}
@@ -331,9 +320,26 @@ function verifyUid(){const v=document.getElementById('usernameInput').value.trim
 function logoutAccount(){verifiedUid=false;verifiedUser="";document.getElementById('verifiedCard').style.display='none';document.getElementById('verifiedCard').innerHTML='';document.getElementById('afterVerify').style.display='none';document.getElementById('usernameOk').style.display='none';document.getElementById('usernameInput').value='';document.getElementById('usernameInput').focus();}
 function selectPack(pi){curPack=curGame.packs[pi];document.querySelectorAll('#packGrid .pack').forEach((el,i)=>{el.classList.toggle('sel',i===pi);});}
 function closeFlow(){['page1','page2','page3','page4','f1'].forEach(id=>{let e=document.getElementById(id); if(e) e.style.display='none';});}
-function backToPage1(){document.getElementById('page2').style.display='none';document.getElementById('page1').style.display='block';}
-function goToPayment(){if(!verifiedUid){alert('❌ First Verify Correct UID!');return;}document.getElementById('page1').style.display='none';document.getElementById('p2UserTop').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:16px">≡ ${verifiedUser} ≡</b><br><span style="color:#aab8c5;font-size:13px">Player ID: ${curGame.fixedUid}</span></div><span style="font-size:22px">⇄</span></div>`;document.getElementById('p2Summary').innerHTML=`<div style="display:flex;justify-content:space-between"><span style="color:#facc15;font-size:13px;font-weight:bold">1 PACK SELECTED</span><span style="font-size:13px;color:#94a3b8">Total</span></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><b style="font-size:22px">${curPack.name}</b><b style="font-size:22px;color:#facc15">${curPack.price}</b></div><div style="font-size:13px;color:#94a3b8;margin-top:6px">UID: ${curGame.fixedUid} | ${verifiedUser} ✅</div><div style="font-size:13px;color:#aaa;margin-top:4px">📦 Pack: ${curPack.name} - ${curPack.price}<br>👤 Username: ${verifiedUser}<br>🆔 UID: ${curGame.fixedUid}<br>🆔 Order ID: DS-${Date.now().toString().slice(-6)}</div>`;let methods=[];if(localStorage.getItem('deal_payCard')!=='0' && document.getElementById('payCard').checked)methods.push({n:"💳 Card - Visa / Mastercard",v:"Card"});if(localStorage.getItem('deal_payApple')!=='0' && document.getElementById('payApple').checked)methods.push({n:"🍎 Apple Pay",v:"Apple Pay"});if(localStorage.getItem('deal_payUsdt')!=='0' && document.getElementById('payUsdt').checked)methods.push({n:"🪙 USDT",v:"USDT"});if(localStorage.getItem('deal_payBtc')!=='0' && document.getElementById('payBtc').checked)methods.push({n:"₿ Bitcoin",v:"Bitcoin"});if(!methods.length)methods.push({n:"💳 Card",v:"Card"});curPay=methods[0].v;document.getElementById('payMethods').innerHTML=methods.map((m,mi)=>`<div class="pay-opt ${mi===0?'sel':''}" onclick="selectPay('${m.v}',this)"><span>${m.n}</span><span>${curPack.price} →</span></div>`).join('');document.getElementById('appleCardBox').style.display=(curPay==='Apple Pay')?'block':'none';document.getElementById('payBtn2').innerText='💰 PAY '+curPack.price+' → SECURE';document.getElementById('page2').style.display='block';}
-function selectPay(v,el){curPay=v;document.querySelectorAll('#payMethods .pay-opt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');document.getElementById('appleCardBox').style.display=(v==='Apple Pay')?'block':'none';if(v==='Apple Pay'){document.getElementById('payBtn2').innerText=' PAY '+curPack.price+' → SECURE';}else{document.getElementById('payBtn2').innerText='💰 PAY '+curPack.price+' → SECURE';}}
+function backToPage1(){document.getElementById('page2').style.display='none';document.getElementById('page4').style.display='none';document.getElementById('page1').style.display='block';}
+function goToPayment(){
+  if(!verifiedUid){alert('❌ First Verify Correct UID!');return;}
+  curOrderId="DS-"+Date.now().toString().slice(-6)+Math.floor(1000+Math.random()*9000);
+  document.getElementById('page1').style.display='none';
+  document.getElementById('p2UserTop').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:16px">≡ ${verifiedUser} ≡</b><br><span style="color:#aab8c5;font-size:13px">Player ID: ${curGame.fixedUid}</span></div><span style="font-size:22px">⇄</span></div>`;
+  document.getElementById('p2Summary').innerHTML=`<div style="display:flex;justify-content:space-between"><span style="color:#facc15;font-size:13px;font-weight:bold">1 PACK SELECTED</span><span style="font-size:13px;color:#94a3b8">Total</span></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><b style="font-size:22px">${curPack.name}</b><b style="font-size:22px;color:#facc15">${curPack.price}</b></div><div style="font-size:13px;color:#94a3b8;margin-top:6px">UID: ${curGame.fixedUid} | ${verifiedUser} ✅</div><div style="font-size:13px;color:#aaa;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.15)">📦 Pack: ${curPack.name} - ${curPack.price}</div><div style="font-size:13px;color:#facc15;margin-top:6px">🆔 Order ID: ${curOrderId}</div>`;
+  let methods=[];
+  if(localStorage.getItem('deal_payCard')!=='0' && document.getElementById('payCard').checked)methods.push({n:"💳 Card - Visa / Mastercard",sub:"********5869",v:"Card",card:"********5869"});
+  if(localStorage.getItem('deal_payApple')!=='0' && document.getElementById('payApple').checked)methods.push({n:"🍎 Apple Pay",sub:"",v:"Apple Pay",card:"•••• 1234"});
+  if(localStorage.getItem('deal_payUsdt')!=='0' && document.getElementById('payUsdt').checked)methods.push({n:"🪙 USDT",sub:"",v:"USDT",card:""});
+  if(localStorage.getItem('deal_payBtc')!=='0' && document.getElementById('payBtc').checked)methods.push({n:"₿ Bitcoin",sub:"",v:"Bitcoin",card:""});
+  if(!methods.length)methods.push({n:"💳 Card - Visa / Mastercard",sub:"********5869",v:"Card",card:"********5869"});
+  curPay=methods[0].v; _curCard=methods[0].card;
+  document.getElementById('payMethods').innerHTML=methods.map((m,mi)=>`<div class="pay-opt ${mi===0?'sel':''}" onclick="selectPay('${m.v}',this,'${m.card}')"><span>${m.n}${m.sub?`<br><span style="font-size:12px;color:#94a3b8">${m.sub}</span>`:''}</span><span>${curPack.price} →</span></div>`).join('');
+  document.getElementById('appleCardBox').style.display=(curPay==='Apple Pay')?'block':'none';
+  document.getElementById('payBtn2').innerText='💰 PAY '+curPack.price+' → SECURE';
+  document.getElementById('page2').style.display='block';
+}
+function selectPay(v,el,card){curPay=v; _curCard=card||"********5869"; document.querySelectorAll('#payMethods .pay-opt').forEach(e=>e.classList.remove('sel')); el.classList.add('sel'); document.getElementById('appleCardBox').style.display=(v==='Apple Pay')?'block':'none'; if(v==='Apple Pay'){document.getElementById('payBtn2').innerText=' PAY '+curPack.price+' → SECURE';}else{document.getElementById('payBtn2').innerText='💰 PAY '+curPack.price+' → SECURE';}}
 function goToLoading(){
   let c=document.getElementById('cvcInput');
   if(c && (!c.value || c.value.length<3)){alert('Enter CVC / CVV');return;}
@@ -341,7 +347,7 @@ function goToLoading(){
   document.getElementById('f1').style.display='flex';
   setTimeout(()=>{
     document.getElementById('f1').style.display='none';
-    let order={id:"DS-"+Date.now().toString().slice(-6),game:curGame.name,pack:curPack.name,price:curPack.price,username:verifiedUser,uid:curGame.fixedUid,userLabel:curGame.userLabel,pay:curPay,status:defaultStatus,time:new Date().toLocaleString()};
+    let order={id:curOrderId||("DS-"+Date.now().toString().slice(-6)+Math.floor(1000+Math.random()*9000)),game:curGame.name,pack:curPack.name,price:curPack.price,username:verifiedUser,uid:curGame.fixedUid,userLabel:curGame.userLabel,pay:curPay,status:defaultStatus,time:new Date().toLocaleString()};
     orders.unshift(order);localStorage.setItem('deal_orders',JSON.stringify(orders));renderOrders();window._lastOrder=order;
     document.getElementById('page3').style.display='block';
     document.getElementById('p3UidLine').innerText='UID: '+curGame.fixedUid+' | '+verifiedUser;
@@ -362,7 +368,26 @@ function goToLoading(){
     },160);
   },3000);
 }
-function showResult(){document.getElementById('page3').style.display='none';let o=window._lastOrder;let found=orders.find(x=>x.id===o.id);let st=found?found.status:defaultStatus;let headColor="#00c853",headIcon="✅",headText="TRANSACTION SUCCESSFUL",msgHtml="";if(st==="Success"){headColor="#00c853";headIcon="✅";headText="TRANSACTION SUCCESSFUL";msgHtml=`<p style="color:#334155;font-size:13px;margin-top:8px">Your ${o.pack} has been sent to ${o.game}.</p>`;}else if(st==="Failed"){headColor="#ff1744";headIcon="❌";headText="TRANSACTION FAILED";msgHtml=`<div style="background:#ff1744;color:#fff;padding:12px;border-radius:12px;margin-top:10px;font-size:13px;text-align:left"><b>Reason:</b><br>${failedReason}</div>`;}else{headColor="#ffcc00";headIcon="⏳";headText="TRANSACTION PENDING";msgHtml=`<p style="color:#334155;font-size:13px;margin-top:8px">Your order is pending. Admin will check and make it Success.</p><div style="background:#ffcc00;color:#000;padding:12px;border-radius:12px;margin-top:10px;font-size:13px;text-align:left"><b>Reason:</b><br>${pendingReason}</div>`;}document.getElementById('resultBox').innerHTML=`<div style="background:#fff;color:#111;border-radius:20px;overflow:hidden;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)"><div style="background:${headColor};padding:22px 15px;color:${st==="Pending"?"#000":"#fff"}"><div style="font-size:45px">${headIcon}</div><h2 style="margin:8px 0 0 0;font-size:20px">${headText}</h2></div><div style="padding:18px;text-align:left;font-size:14px;color:#334155"><div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9"><span>Order ID</span><b>${o.id}</b></div><div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9"><span>Username</span><b>${o.username}</b></div><div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9"><span>Player ID</span><b>${o.uid}</b></div><div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9"><span>Pack</span><b>${o.pack}</b></div><div style="display:flex;justify-content:space-between;padding:7px 0"><span>Amount</span><b style="color:#16a34a">${o.price}</b></div>${msgHtml}<p style="text-align:center;color:#64748b;font-size:12px;margin-top:10px">Payment: ${o.pay} • Time: ${o.time}</p></div></div>`;document.getElementById('page4').style.display='block';}
+function showResult(){
+  document.getElementById('page3').style.display='none';
+  let o=window._lastOrder;
+  let found=orders.find(x=>x.id===o.id);
+  let st=found?found.status:defaultStatus;
+  let cardTxt=_curCard||"•••• 4242";
+  let cardName="AMEX";
+  if(curPay==="Card") cardName="VISA";
+  if(curPay==="Visa") cardName="VISA";
+  if(curPay==="Mastercard") cardName="MASTER";
+  if(curPay==="Amex") cardName="AMEX";
+  if(curPay==="Golden VIP Card") cardName="VIP";
+  if(curPay==="Apple Pay") cardName="APPLE PAY";
+  let title=st==="Success"?"PAYMENT SUCCESSFUL!":st==="Failed"?"PAYMENT FAILED!":"PAYMENT PENDING!";
+  let sub=st==="Success"?"Transaction approved by the issuer.":st==="Failed"?"Transaction declined by the small pack issuer or ID.":"Transaction is waiting for approval.";
+  let icon=st==="Success"?"✓":st==="Failed"?"✕":"◷";
+  let reason=st==="Success"?("Your "+o.pack+" has been sent successfully."):st==="Failed"?failedReason:pendingReason;
+  document.getElementById('resultBox').innerHTML=`<div style="background:#0A0A12;border:2px solid #E8C46A;border-radius:20px;overflow:hidden;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.7);max-width:380px;margin:0 auto"><div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #E8C46A"><div style="display:flex;gap:8px;align-items:center"><span style="background:#E8C46A;color:#000;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900">UC</span><b style="color:#5AB0FF;font-size:13px;letter-spacing:.5px">TRANSACTION RESULT</b><span style="background:#E8C46A;color:#000;font-size:10px;padding:4px 8px;border-radius:20px;font-weight:900">★ VIP</span></div><span onclick="closeFlow()" style="color:#5AB0FF;font-size:20px;cursor:pointer">X</span></div><div style="padding:18px 16px 6px 16px"><div style="width:62px;height:62px;border-radius:50%;border:2px solid #E8C46A;background:#1A0A0A;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:26px;color:#fff">${icon}</div><h2 style="color:#E8C46A;font-size:22px;margin:14px 0 6px 0;letter-spacing:1px">${title}</h2><p style="color:#fff;font-size:12px;line-height:1.5">${sub}</p></div><div style="background:#000;margin:14px 16px;border-radius:12px;padding:14px;text-align:left;font-size:13px;line-height:2.2"><div style="display:flex;justify-content:space-between"><span style="color:#5AB0FF">Pack:</span><b style="color:#E8C46A">${o.pack} - ${o.price}</b></div><div style="display:flex;justify-content:space-between"><span style="color:#5AB0FF">UID:</span><b style="color:#5AB0FF">${o.uid}</b></div><div style="display:flex;justify-content:space-between"><span style="color:#5AB0FF">Username:</span><b style="color:#E8C46A">${o.username}</b></div><div style="display:flex;justify-content:space-between"><span style="color:#5AB0FF">Card:</span><b style="color:#fff">${cardName} ${cardTxt} ★</b></div><div style="border-top:1px dashed #5AB0FF;margin:6px 0"></div><div style="display:flex;justify-content:space-between"><span style="color:#5AB0FF">Time:</span><b style="color:#5AB0FF">${o.time}</b></div></div><div style="background:#3A2E0A;border:1px solid #E8C46A;margin:0 16px 14px 16px;padding:12px;border-radius:10px;text-align:left;font-size:12px;color:#E8C46A;line-height:1.6"><b>Reason:</b> ${reason}</div><div style="display:flex;gap:10px;padding:0 16px 18px 16px"><button onclick="closeFlow()" style="flex:1;background:#1E6FE8;color:#fff;padding:14px;border-radius:12px;box-shadow:none">Cancel</button><button onclick="backToPage1()" style="flex:1;background:#E8C46A;color:#000;padding:14px;border-radius:12px;box-shadow:none;font-weight:900">RETRY</button></div></div>`;
+  document.getElementById('page4').style.display='block';
+}
 function contactAdmin(){alert('Customer Service: '+(document.getElementById('showContact').textContent||'Check Contact in Settings'));}
 function uploadGamePhoto(e,i){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{collectGames();games[i].photo=ev.target.result;localStorage.setItem('deal_games',JSON.stringify(games));renderAll();alert('✅ Banner Added For This Game! Now open this game, only this banner will show on top - No Timer.');};r.readAsDataURL(f);}
 function removeGamePhoto(i){collectGames();games[i].photo="";localStorage.setItem('deal_games',JSON.stringify(games));renderAll();}
