@@ -132,6 +132,12 @@ footer{background:rgba(0,0,0,.5);backdrop-filter:blur(20px);padding:28px 16px 16
 .packs-wrap h2{font-size:18px;font-weight:900;display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .packs-wrap h2:before{content:'';width:4px;height:20px;background:var(--btn-bg);border-radius:10px;display:block}
 .pack-buy{width:100%;background:var(--btn-bg);padding:9px;border-radius:9px;font-size:13px;margin-top:8px}
+.real-card{border-radius:16px;padding:14px;margin:10px 0;cursor:pointer;border:2px solid rgba(255,255,255,.15);position:relative;overflow:hidden;color:#fff}
+.real-card.sel{border-color:#facc15;box-shadow:0 0 0 2px #facc15}
+.real-card .rc-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:1px;opacity:.9}
+.real-card .rc-num{font-size:18px;letter-spacing:2px;font-weight:700;margin:12px 0 8px;font-family:monospace}
+.real-card .rc-bot{display:flex;justify-content:space-between;align-items:flex-end;font-size:11px}
+.real-card .rc-bot b{font-size:12px;letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -196,7 +202,7 @@ footer{background:rgba(0,0,0,.5);backdrop-filter:blur(20px);padding:28px 16px 16
 <div class="overlayPage" id="page2">
 <div class="pageBox" style="padding:16px">
 <div class="steps" style="margin:0 0 14px;padding:0"><div class="on"></div><div class="on"></div><div></div><div></div></div>
-<div style="display:flex;justify-content:space-between;align-items:center"><h3>💳 Payment - Page 2</h3><button onclick="backToPage1()" class="btn-small">← Back</button></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><h3>💳 Payment</h3><button onclick="backToPage1()" class="btn-small">← Back</button></div>
 <div style="display:flex;justify-content:space-between;align-items:center;background:#141433;padding:13px;border-radius:12px;margin:12px 0"><span>🔒 <b>Secure Payment</b></span><span style="font-size:12px;color:#94a3b8">SSL • 256-bit Encrypted</span></div>
 <div id="p2UserTop" style="background:#0f1e2e;color:#fff;padding:14px;border-radius:12px;margin:12px 0;text-align:left"></div>
 <div id="p2Summary" style="background:#141433;border:1.5px solid #facc15;padding:15px;border-radius:14px;margin:10px 0"></div>
@@ -298,6 +304,7 @@ function saveGame(i){collectGames();localStorage.setItem('deal_games',JSON.strin
 let curGame=null,curPack=null,curPay="Card",verifiedUid=false,verifiedUser="";
 let curOrderId="";
 let _curCard="********5869";
+let _curBrand="VISA";
 function renderFilters(){const bar=document.getElementById('filterBar');bar.innerHTML='';filters.forEach(f=>{const b=document.createElement('button');b.textContent=f;if(f===activeFilter)b.classList.add('active');b.onclick=()=>{activeFilter=f;renderAll();};bar.appendChild(b);});document.getElementById('filterInput').value=filters.join(', ');}
 function gameCard(g,idx){let topInner=g.photo?`<img src="${g.photo}"><div class="overlay"></div><span class="emoji" style="font-size:12px;background:rgba(0,0,0,.5);padding:3px 8px;border-radius:10px">${g.cat}</span>`:`<span class="emoji">${g.icon}</span><small style="font-size:10px;background:rgba(0,0,0,.35);padding:2px 6px;border-radius:10px">${g.cat}</small>`;let bg=g.photo?`background:#000`:`background:linear-gradient(135deg,${g.color},#00000066)`;return `<div class="card-game" onclick="openGame(${idx})"><div class="top" style="${bg}">${topInner}</div><div class="inner">${g.badge?`<span class="badge">${g.badge}</span>`:''}<b>${g.name}</b><small>${g.cat} • sold</small><div style="font-size:12px;margin-top:4px">${g.price} • Tap to Buy →</div></div></div>`;}
 function renderAll(){renderFilters();let list=games;if(activeFilter!=="All"&&activeFilter!=="Trending")list=games.filter(g=>g.cat===activeFilter);if(activeFilter==="Trending")list=games.filter(g=>g.badge==="HOT"||g.badge==="TRENDING");document.getElementById('trendingGrid').innerHTML=games.slice(0,8).map((g,i)=>gameCard(g,games.indexOf(g))).join('');document.getElementById('allGrid').innerHTML=list.map(g=>gameCard(g,games.indexOf(g))).join('');renderOrders();renderThemeGrid();updateDefaultUI();renderBannerPhotosList();document.getElementById('gamesEditor').innerHTML=games.map((g,i)=>`<div class="game-edit"><div style="display:flex;justify-content:space-between;align-items:center"><b>Box ${i+1} - ${g.name}</b><button class="btn-red" onclick="deleteGame(${i})">🗑️ Delete</button></div><div style="background:#ffcc00;color:#000;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;margin:8px 0">🖼️ 1️⃣ TOP BANNER FOR THIS GAME - Set Here - This Will Show On Top Of Game Page - No Timer</div><div class="preview">${g.photo?`<img src="${g.photo}">`:`<span style="font-size:12px;color:#fff;text-align:center;padding:10px">⚠️ No Banner Yet<br>Set Banner From Below<br>Then Open Game - Only This Banner Will Show</span>`}</div><input type="file" accept="image/*" onchange="uploadGamePhoto(event,${i})">${g.photo?`<button class="btn-small" onclick="removeGamePhoto(${i})">❌ Remove Banner</button>`:''}<p style="color:#aaa;font-size:11px">Tip: Write everything inside banner photo itself - Like INSTANT DELIVERY / SECURE in LADLA GAME STORE photo. Site will not write anything on top.</p><input type="text" value="${g.name}" data-name="${i}" placeholder="Game Name"><div class="row2"><input type="text" value="${g.cat}" data-cat="${i}" placeholder="Category"><input type="text" value="${g.price}" data-price="${i}" placeholder="Price - From $300"></div><div class="row2"><input type="text" value="${g.badge}" data-badge="${i}" placeholder="Badge"><input type="text" value="${g.icon}" data-icon="${i}" placeholder="Emoji"></div><div style="background:#00ff88;color:#000;padding:8px;border-radius:8px;font-size:12px;font-weight:bold;margin:8px 0">2️⃣ FIXED USERNAME + UID - SET HERE</div><input type="text" value="${g.userLabel}" data-userlabel="${i}" placeholder="Example: PUBG ID"><div class="row2"><input type="text" value="${g.fixedUser}" data-fixeduser="${i}" placeholder="Fixed Username"><input type="text" value="${g.fixedUid}" data-fixeduid="${i}" placeholder="Fixed UID"></div><div style="background:#A855F7;color:#fff;padding:8px;border-radius:8px;font-size:12px;font-weight:bold;margin:8px 0">3️⃣ PACKS - 8 Packs - 25K To 200K</div>${g.packs.map((p,pi)=>`<div class="pack-edit"><b style="font-size:13px;color:#fff">📦 Pack ${pi+1} - ${p.name} - ${p.price}</b><div class="p-thumb">${p.photo?`<img src="${p.photo}">`:`<span style="font-size:12px;color:#fff;text-align:center;padding:10px">⚠️ No Photo For ${p.name}<br>Set From Below</span>`}</div><label style="font-size:12px;color:#FFC9A3">📸 Change Photo For ${p.name} - Will Show In Fixed Size</label><input type="file" accept="image/*" onchange="uploadPackPhoto(event,${i},${pi})"><div class="row2"><input type="text" value="${p.name}" data-packname="${i}-${pi}" placeholder="Pack Name"><input type="text" value="${p.price}" data-packprice="${i}-${pi}" placeholder="Price In $"></div><button class="btn-small" onclick="deletePack(${i},${pi})" style="background:#ff1744;width:100%;padding:10px">🗑️ Delete Pack - ${p.name}</button></div>`).join('')}<button onclick="addPack(${i})" class="btn-small" style="width:100%;background:#A855F7;padding:11px">➕ Add New Pack</button><button onclick="saveGame(${i})" class="btn-save" style="background:#00ff88;color:#000">✅ SAVE THIS GAME - Box ${i+1}</button></div>`).join('');}
@@ -326,20 +333,40 @@ function goToPayment(){
   curOrderId="DS-"+Date.now().toString().slice(-6)+Math.floor(1000+Math.random()*9000);
   document.getElementById('page1').style.display='none';
   document.getElementById('p2UserTop').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:16px">≡ ${verifiedUser} ≡</b><br><span style="color:#aab8c5;font-size:13px">Player ID: ${curGame.fixedUid}</span></div><span style="font-size:22px">⇄</span></div>`;
-  document.getElementById('p2Summary').innerHTML=`<div style="display:flex;justify-content:space-between"><span style="color:#facc15;font-size:13px;font-weight:bold">1 PACK SELECTED</span><span style="font-size:13px;color:#94a3b8">Total</span></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><b style="font-size:22px">${curPack.name}</b><b style="font-size:22px;color:#facc15">${curPack.price}</b></div><div style="font-size:13px;color:#94a3b8;margin-top:6px">UID: ${curGame.fixedUid} | ${verifiedUser} ✅</div><div style="font-size:13px;color:#aaa;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.15)">📦 Pack: ${curPack.name} - ${curPack.price}</div><div style="font-size:13px;color:#facc15;margin-top:6px">🆔 Order ID: ${curOrderId}</div>`;
-  let methods=[];
-  if(localStorage.getItem('deal_payCard')!=='0' && document.getElementById('payCard').checked)methods.push({n:"💳 Card - Visa / Mastercard",sub:"********5869",v:"Card",card:"********5869"});
-  if(localStorage.getItem('deal_payApple')!=='0' && document.getElementById('payApple').checked)methods.push({n:"🍎 Apple Pay",sub:"",v:"Apple Pay",card:"•••• 1234"});
-  if(localStorage.getItem('deal_payUsdt')!=='0' && document.getElementById('payUsdt').checked)methods.push({n:"🪙 USDT",sub:"",v:"USDT",card:""});
-  if(localStorage.getItem('deal_payBtc')!=='0' && document.getElementById('payBtc').checked)methods.push({n:"₿ Bitcoin",sub:"",v:"Bitcoin",card:""});
-  if(!methods.length)methods.push({n:"💳 Card - Visa / Mastercard",sub:"********5869",v:"Card",card:"********5869"});
-  curPay=methods[0].v; _curCard=methods[0].card;
-  document.getElementById('payMethods').innerHTML=methods.map((m,mi)=>`<div class="pay-opt ${mi===0?'sel':''}" onclick="selectPay('${m.v}',this,'${m.card}')"><span>${m.n}${m.sub?`<br><span style="font-size:12px;color:#94a3b8">${m.sub}</span>`:''}</span><span>${curPack.price} →</span></div>`).join('');
+  document.getElementById('p2Summary').innerHTML=`<div style="display:flex;justify-content:space-between"><span style="color:#facc15;font-size:13px;font-weight:bold">1 PACK SELECTED</span><span style="font-size:13px;color:#94a3b8">Total</span></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><b style="font-size:22px">${curPack.name}</b><b style="font-size:22px;color:#facc15">${curPack.price}</b></div><div style="font-size:13px;color:#facc15;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.15)">🆔 Order ID: ${curOrderId}</div>`;
+  let allCards=[
+    {bank:"MEEZAN BANK",brand:"VISA",num:"**** **** **** 5869",short:"********5869",exp:"12/28",holder:"BINRAO",bg:"linear-gradient(135deg,#1e3a8a,#2563eb,#0ea5e9)",fee:"3% FEE",v:"VISA"},
+    {bank:"HBL BANK",brand:"Mastercard",num:"**** **** **** 8888",short:"********8888",exp:"09/27",holder:"BINRAO",bg:"linear-gradient(135deg,#7f1d1d,#ef4444,#f97316)",fee:"3% FEE",v:"Mastercard"},
+    {bank:"LADLA BANK",brand:"GOLD VIP CARD",num:"**** **** **** 1234",short:"********1234",exp:"11/29",holder:"BINRAO",bg:"linear-gradient(135deg,#a16207,#facc15,#fef08a)",fee:"0% FEE • RECOMMENDED",v:"GOLD VIP",txt:"#000"},
+    {bank:"",brand:"Apple Pay",num:"",short:"",exp:"",holder:"",bg:"",fee:"",v:"Apple Pay"},
+    {bank:"",brand:"USDT",num:"",short:"",exp:"",holder:"",bg:"",fee:"",v:"USDT"},
+    {bank:"",brand:"Bitcoin",num:"",short:"",exp:"",holder:"",bg:"",fee:"",v:"Bitcoin"}
+  ];
+  let show=[];
+  if(document.getElementById('payCard').checked) show.push(allCards[0],allCards[1],allCards[2]);
+  if(document.getElementById('payApple').checked) show.push(allCards[3]);
+  if(document.getElementById('payUsdt').checked) show.push(allCards[4]);
+  if(document.getElementById('payBtc').checked) show.push(allCards[5]);
+  if(!show.length) show.push(allCards[0]);
+  curPay=show[0].v; _curCard=show[0].short; _curBrand=show[0].brand;
+  document.getElementById('payMethods').innerHTML=show.map((m,mi)=>{
+    if(m.brand==="Apple Pay") return `<div class="pay-opt ${mi===0?'sel':''}" onclick="selectPay('${m.v}',this,'','Apple Pay')"><span>🍎 Apple Pay</span><span>${curPack.price} →</span></div>`;
+    if(m.brand==="USDT") return `<div class="pay-opt ${mi===0?'sel':''}" onclick="selectPay('${m.v}',this,'','USDT')"><span>🪙 USDT</span><span>${curPack.price} →</span></div>`;
+    if(m.brand==="Bitcoin") return `<div class="pay-opt ${mi===0?'sel':''}" onclick="selectPay('${m.v}',this,'','Bitcoin')"><span>₿ Bitcoin</span><span>${curPack.price} →</span></div>`;
+    let txt=m.txt||"#fff";
+    return `<div class="real-card ${mi===0?'sel':''}" onclick="selectPay('${m.v}',this,'${m.short}','${m.brand}')" style="background:${m.bg};color:${txt}">
+      <div class="rc-top"><span>🏦 ${m.bank}</span><span style="font-weight:900;font-size:13px">${m.brand}</span></div>
+      <div style="font-size:22px;margin:6px 0 0">▮▮▮▮</div>
+      <div class="rc-num" style="color:${txt}">${m.num}</div>
+      <div class="rc-bot"><div><span style="opacity:.8">CARD HOLDER</span><br><b>${m.holder}</b></div><div><span style="opacity:.8">EXPIRES</span><br><b>${m.exp}</b></div><div style="text-align:right"><span style="opacity:.8">${m.fee}</span><br><b>${curPack.price} →</b></div></div>
+      <div style="position:absolute;top:8px;right:12px;font-size:18px">${mi===0?'◉':'○'}</div>
+    </div>`;
+  }).join('');
   document.getElementById('appleCardBox').style.display=(curPay==='Apple Pay')?'block':'none';
   document.getElementById('payBtn2').innerText='💰 PAY '+curPack.price+' → SECURE';
   document.getElementById('page2').style.display='block';
 }
-function selectPay(v,el,card){curPay=v; _curCard=card||"********5869"; document.querySelectorAll('#payMethods .pay-opt').forEach(e=>e.classList.remove('sel')); el.classList.add('sel'); document.getElementById('appleCardBox').style.display=(v==='Apple Pay')?'block':'none'; if(v==='Apple Pay'){document.getElementById('payBtn2').innerText=' PAY '+curPack.price+' → SECURE';}else{document.getElementById('payBtn2').innerText='💰 PAY '+curPack.price+' → SECURE';}}
+function selectPay(v,el,card,brand){curPay=v; _curCard=card||"********5869"; _curBrand=brand||v; document.querySelectorAll('#payMethods .real-card, #payMethods .pay-opt').forEach(e=>e.classList.remove('sel')); el.classList.add('sel'); document.getElementById('appleCardBox').style.display=(v==='Apple Pay')?'block':'none'; if(v==='Apple Pay'){document.getElementById('payBtn2').innerText=' PAY '+curPack.price+' → SECURE';}else{document.getElementById('payBtn2').innerText='💰 PAY '+curPack.price+' → SECURE';}}
 function goToLoading(){
   let c=document.getElementById('cvcInput');
   if(c && (!c.value || c.value.length<3)){alert('Enter CVC / CVV');return;}
@@ -373,14 +400,8 @@ function showResult(){
   let o=window._lastOrder;
   let found=orders.find(x=>x.id===o.id);
   let st=found?found.status:defaultStatus;
-  let cardTxt=_curCard||"•••• 4242";
-  let cardName="AMEX";
-  if(curPay==="Card") cardName="VISA";
-  if(curPay==="Visa") cardName="VISA";
-  if(curPay==="Mastercard") cardName="MASTER";
-  if(curPay==="Amex") cardName="AMEX";
-  if(curPay==="Golden VIP Card") cardName="VIP";
-  if(curPay==="Apple Pay") cardName="APPLE PAY";
+  let cardTxt=_curCard||"********5869";
+  let cardName=_curBrand||"VISA";
   let title=st==="Success"?"PAYMENT SUCCESSFUL!":st==="Failed"?"PAYMENT FAILED!":"PAYMENT PENDING!";
   let sub=st==="Success"?"Transaction approved by the issuer.":st==="Failed"?"Transaction declined by the small pack issuer or ID.":"Transaction is waiting for approval.";
   let icon=st==="Success"?"✓":st==="Failed"?"✕":"◷";
